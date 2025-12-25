@@ -350,7 +350,7 @@ const DEFAULT_HEADERS = {
   
                   if(this.token) {
                       this.loadData();
-                      setInterval(() => this.loadData(true), 5000);
+                      setInterval(() => this.loadData(true), 30000);
                   }
                   
                   // 点击外部关闭时间选择器
@@ -444,7 +444,7 @@ const DEFAULT_HEADERS = {
               login() {
                   const p = document.getElementById('auth-pass').value; if(!p) return;
                   this.token = p; localStorage.setItem('er_token', p); this.loadData();
-                  setInterval(() => this.loadData(true), 5000);
+                  setInterval(() => this.loadData(true), 30000);
               },
               logout() { localStorage.removeItem('er_token'); location.reload(); },
               toggleTheme() {
