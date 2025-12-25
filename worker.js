@@ -1,7 +1,7 @@
 /**
- * 事件提醒 (Event Reminder) v5.4
+ * 事件提醒 (Event Reminder) v5.5
  * Cloudflare Workers 版
- * 优化：自定义微型时间选择器、Placeholder淡化、UI协调
+ * 优化：在卡片上增加到期日期的显示，并保持UI协调
  */
 
 const DEFAULT_HEADERS = {
@@ -235,7 +235,7 @@ const DEFAULT_HEADERS = {
                           
                           <div class="mb-3">
                               <label class="form-label">名称</label>
-                              <input type="text" class="form-control fw-bold" id="itemName" placeholder="例如：GV 保号" required>
+                              <input type="text" class="form-control fw-bold" id="itemName" placeholder="例如:GV 保号" required>
                           </div>
   
                           <div class="mb-3">
@@ -281,11 +281,11 @@ const DEFAULT_HEADERS = {
                           </div>
   
                           <div class="row g-2 mb-3 align-items-end">
-                              <div class="col-9">
+                              <div class="col-7">
                                   <label class="form-label">提醒规则</label>
-                                  <input type="text" class="form-control" id="reminders" value="" placeholder="到期日之前，使用逗号分隔">
+                                  <input type="text" class="form-control" id="reminders" value="" placeholder="到期日之前,逗号分隔">
                               </div>
-                              <div class="col-3">
+                              <div class="col-5">
                                   <label class="form-label">通知时间</label>
                                   <!-- 自定义微型时间选择器 -->
                                   <div class="time-picker-wrapper">
@@ -492,6 +492,7 @@ const DEFAULT_HEADERS = {
   
                   filtered.forEach(item => {
                       const days = this.getDays(item);
+                      const dueDate = this.calcDue(item); // 优化点: 获取到期日对象
                       let pillClass = 'pill-safe', pillText = '状态良好', dayColor = 'var(--primary)';
                       if(days <= 15) { pillClass = 'pill-warn'; pillText = '临近'; dayColor = '#f59e0b'; }
                       if(days <= 7) { pillClass = 'pill-danger'; pillText = '急需'; dayColor = '#ef4444'; }
@@ -527,7 +528,12 @@ const DEFAULT_HEADERS = {
                                   </div>
                                   <small style="color:var(--text-sub); font-weight:500;">\${cycleText}</small>
                               </div>
-                              <div class="days-big" style="color: \${dayColor}">\${days}</div>
+                              <!-- ▼▼▼ 优化区域开始 ▼▼▼ -->
+                              <div class="d-flex justify-content-between align-items-center">
+                                  <div class="days-big" style="color: \${dayColor}">\${days}</div>
+                                  <small style="color:var(--text-sub); font-weight:500;">\${dueDate.toLocaleDateString('en-CA')}</small>
+                              </div>
+                              <!-- ▲▲▲ 优化区域结束 ▲▲▲ -->
                               <div class="card-title text-truncate">\${item.name}</div>
                               <div class="card-note">\${item.notes || '-'}</div>
                               \${btnHtml}
